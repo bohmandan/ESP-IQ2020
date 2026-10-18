@@ -88,6 +88,7 @@ CONF_SENSOR_IQ_HOURSLEFT = "iq_hoursleft"
 CONF_SENSOR_RTC_TIMESTAMP = "rtc_timestamp"
 CONF_SENSOR_COOLZONE_MODE_RAW = "coolzone_mode_raw"
 CONF_SENSOR_COOLZONE_STATE_RAW = "coolzone_state_raw"
+CONF_SENSOR_HAWK_STATUS_RAW = "hawk_status_raw"
 
 CONF_IQ2020_SERVER = "iq2020_server"
 
@@ -409,6 +410,11 @@ CONFIG_SCHEMA = cv.Schema(
             icon="mdi:heat-pump",
             entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
         ),
+        cv.Optional(CONF_SENSOR_HAWK_STATUS_RAW): sensor.sensor_schema(
+            accuracy_decimals=0,
+            icon="mdi:weather-night",
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        ),
     }
 )
 
@@ -647,3 +653,7 @@ async def to_code(config):
     if CONF_SENSOR_COOLZONE_STATE_RAW in config:
         sens = await sensor.new_sensor(config[CONF_SENSOR_COOLZONE_STATE_RAW])
         cg.add(server.set_coolzone_state_raw_sensor(sens))
+
+    if CONF_SENSOR_HAWK_STATUS_RAW in config:
+        sens = await sensor.new_sensor(config[CONF_SENSOR_HAWK_STATUS_RAW])
+        cg.add(server.set_hawk_status_raw_sensor(sens))
