@@ -220,6 +220,10 @@ binary_sensor:
     # ACE/Freshwater Salt
     salt_level_confirmed:
       name: Salt Level Confirmed
+    econ_mode:
+      name: Econ Mode
+    circulation_cycle:
+      name: Circulation Cycle
 
 # If using celsius units on the hot tub remote, replace _f_ with _c_ in the three entries below.
 # Feel free to remove any sensor that are not relevent for your hot tub.
@@ -234,6 +238,10 @@ sensor:
       name: Heater Outlet
     pcb_${celcius_farenheit}_temperature:
       name: Controller Temperature
+    filter_time_1:
+      name: Filter Time 1
+    filter_time_2:
+      name: Filter Time 2
     # ACE/Freshwater Salt
     salt_content:
       name: Salt Level

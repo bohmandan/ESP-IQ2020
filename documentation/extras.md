@@ -563,6 +563,37 @@ time:
               tag: heartbeat
 ```
 
+## Econ Mode, Circulation Cycle and Filter Times
+
+The IQ2020 reports the econ mode (the moon & stars icon on the remote), if a circulation cycle is running and the two filter cycle times. These are the ECON, FILT1 and FILT2 settings in the TOOLS menu of the remote. These are read only, changing them from Home Assistant is not supported.
+
+```yaml
+binary_sensor:
+  - platform: iq2020
+    econ_mode:
+      name: Econ Mode
+    circulation_cycle:
+      name: Circulation Cycle
+
+sensor:
+  - platform: iq2020
+    filter_time_1:
+      name: Filter Time 1
+    filter_time_2:
+      name: Filter Time 2
+```
+
+The filter times are in minutes, so `F 0:30` on the remote shows up as 30. The circulation cycle sensor is on while a filter cycle is running, for example jets 1 running for 30 minutes.
+
+There is also a raw sensor with the flags byte these binary sensors are decoded from (0x01 = Econ mode, 0x08 = Circulation cycle). This is useful if you see values that are not yet decoded.
+
+```yaml
+sensor:
+  - platform: iq2020
+    hawk_status_raw:
+      name: Hawk Status Raw
+```
+
 ## Real Time Clock
 
 Except for the very early IQ2020 boards, most of them have a battery backed real-time clock. So, you can set and read the time on these boards. Except for more recent models, the IQ2020 clock is not used much and so, never set to the right time. The ESP32 can set and read the IQ2020 clock and this can be useful is you want to perform time-based operations without the need for internet or Home Assistant to be a time source.
