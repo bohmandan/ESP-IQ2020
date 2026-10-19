@@ -169,6 +169,8 @@ public:
 	void set_coolzone_mode_raw_sensor(esphome::sensor::Sensor *sensor) { this->coolzone_mode_raw_sensor_ = sensor; }
 	void set_coolzone_state_raw_sensor(esphome::sensor::Sensor *sensor) { this->coolzone_state_raw_sensor_ = sensor; }
 	void set_hawk_status_raw_sensor(esphome::sensor::Sensor *sensor) { this->hawk_status_raw_sensor_ = sensor; }
+	void set_filter_time_1_sensor(esphome::sensor::Sensor *sensor) { this->filter_time_1_sensor_ = sensor; }
+	void set_filter_time_2_sensor(esphome::sensor::Sensor *sensor) { this->filter_time_2_sensor_ = sensor; }
 	void set_salt_cartridge_age_days_sensor(esphome::sensor::Sensor *sensor) { this->salt_cartridge_age_days_sensor_ = sensor; }
 	void set_salt_days_since_manual_test_sensor(esphome::sensor::Sensor *sensor) { this->salt_days_since_manual_test_sensor_ = sensor; }
 	void set_salt_generation_hours_sensor(esphome::sensor::Sensor *sensor) { this->salt_generation_hours_sensor_ = sensor; }
@@ -309,6 +311,8 @@ protected:
 	esphome::sensor::Sensor *coolzone_mode_raw_sensor_;
 	esphome::sensor::Sensor *coolzone_state_raw_sensor_;
 	esphome::sensor::Sensor *hawk_status_raw_sensor_;
+	esphome::sensor::Sensor *filter_time_1_sensor_;
+	esphome::sensor::Sensor *filter_time_2_sensor_;
 	esphome::sensor::Sensor *salt_cartridge_age_days_sensor_;
 	esphome::sensor::Sensor *salt_days_since_manual_test_sensor_;
 	esphome::sensor::Sensor *salt_generation_hours_sensor_;

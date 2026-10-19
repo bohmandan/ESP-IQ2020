@@ -1057,6 +1057,8 @@ int IQ2020Component::processIQ2020Command() {
 				if (this->pcb_f_temperature_sensor_) this->pcb_f_temperature_sensor_->publish_state((float)processingBuffer[128]);
 				if (this->pcb_c_temperature_sensor_) this->pcb_c_temperature_sensor_->publish_state((float)esphome::fahrenheit_to_celsius((float)processingBuffer[128]));
 				if (this->hawk_status_raw_sensor_) this->hawk_status_raw_sensor_->publish_state((float)processingBuffer[127]); // Hawk status flags (econ / circ)
+				if (this->filter_time_1_sensor_) this->filter_time_1_sensor_->publish_state((float)(processingBuffer[123] + (processingBuffer[124] << 8))); // Minutes, FILT1 on the panel
+				if (this->filter_time_2_sensor_) this->filter_time_2_sensor_->publish_state((float)(processingBuffer[125] + (processingBuffer[126] << 8))); // Minutes, FILT2 on the panel
 
 				// Read the real time clock, for example:
 				//   00312111 - Time hh:mm:ss, 17:33:49

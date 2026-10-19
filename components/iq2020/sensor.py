@@ -6,6 +6,7 @@ from esphome.components import sensor
 from esphome.const import (
     UNIT_WATT,
     UNIT_SECOND,
+    UNIT_MINUTE,
     UNIT_CELSIUS,
     UNIT_AMPERE,
     UNIT_VOLT,
@@ -89,6 +90,8 @@ CONF_SENSOR_RTC_TIMESTAMP = "rtc_timestamp"
 CONF_SENSOR_COOLZONE_MODE_RAW = "coolzone_mode_raw"
 CONF_SENSOR_COOLZONE_STATE_RAW = "coolzone_state_raw"
 CONF_SENSOR_HAWK_STATUS_RAW = "hawk_status_raw"
+CONF_SENSOR_FILTER_TIME_1 = "filter_time_1"
+CONF_SENSOR_FILTER_TIME_2 = "filter_time_2"
 
 CONF_IQ2020_SERVER = "iq2020_server"
 
@@ -415,6 +418,18 @@ CONFIG_SCHEMA = cv.Schema(
             icon="mdi:weather-night",
             entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
         ),
+        cv.Optional(CONF_SENSOR_FILTER_TIME_1): sensor.sensor_schema(
+            unit_of_measurement=UNIT_MINUTE,
+            accuracy_decimals=0,
+            icon=ICON_TIMER,
+            device_class=DEVICE_CLASS_DURATION,
+        ),
+        cv.Optional(CONF_SENSOR_FILTER_TIME_2): sensor.sensor_schema(
+            unit_of_measurement=UNIT_MINUTE,
+            accuracy_decimals=0,
+            icon=ICON_TIMER,
+            device_class=DEVICE_CLASS_DURATION,
+        ),
     }
 )
 
@@ -657,3 +672,11 @@ async def to_code(config):
     if CONF_SENSOR_HAWK_STATUS_RAW in config:
         sens = await sensor.new_sensor(config[CONF_SENSOR_HAWK_STATUS_RAW])
         cg.add(server.set_hawk_status_raw_sensor(sens))
+
+    if CONF_SENSOR_FILTER_TIME_1 in config:
+        sens = await sensor.new_sensor(config[CONF_SENSOR_FILTER_TIME_1])
+        cg.add(server.set_filter_time_1_sensor(sens))
+
+    if CONF_SENSOR_FILTER_TIME_2 in config:
+        sens = await sensor.new_sensor(config[CONF_SENSOR_FILTER_TIME_2])
+        cg.add(server.set_filter_time_2_sensor(sens))
