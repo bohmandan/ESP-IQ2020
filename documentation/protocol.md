@@ -222,7 +222,7 @@ The Spa Connection Kit sends all it's commands from address 0x1F. Sending the co
 ```
 0100 - Get version string
 0109 - Change temperature
-0241 - Unknown (02413C001E0000)
+0241 - Get filter / econ settings (02413C001E0000), see below. Writing to it seems to be ignored.
 024C - Unknown (024C1B0C110300E80701)
 0255 - Get status short
 0256 - Get status long
@@ -235,7 +235,7 @@ The Spa Connection Kit sends all it's commands from address 0x1F. Sending the co
 0B1D - Spa Lock
 0B1E - Temperature Lock
 0B1F - Clean Cycle
-0B20 - Unknown (0B2001)
+0B20 - Unknown on/off setting (0B2001). Not econ mode. On a Jacuzzi spa, 0B2002 (on) is refused and the reply stays 0B2000.
 0B27 - Change interior light level
 1702 - Set Lights on/off
 1705 - Get Lights status
@@ -571,6 +571,27 @@ Set Current Time
 
 Same encoding as Get Current Time.
 ```
+
+Get filter / econ settings
+```
+--> 01 1F 40 0241
+<-- 1F 01 80 024100001E0001
+                 AAAABBBBFF
+AAAA = Filter Time 1
+BBBB = Filter Time 2 (0x1E = 30 minutes)
+FF   = Hawk status flags, same as in the 0x0256 status: 0x01 = Econ mode (moon & stars), 0x08 = Circulation cycle running
+```
+Sending the same payload back with the econ flag changed (01 1F 40 024100001E0000) does not change anything, the reply is just the current values.
+
+Query the state of a 0x0B on/off setting
+```
+--> 01 1F 40 0B1C
+<-- 1F 01 80 0B1C00
+```
+Sending a 0x0B command without the value byte returns the current state and does not change anything.
+Scanning the unknown commands from 0B00 to 0B2A this way on a Jacuzzi spa, only 0B01 (replies 0B0206), 0B20 and 0B27 reply.
+None of them follow the econ mode, so the command to set econ mode is still unknown.
+The topside panel does not seem to be on the RS485 bus, so pressing the econ button on the panel can't be captured.
 
 Command 0x0255 is just like command 0x0256 but shorter. Some information at the end is missing.
 ```
