@@ -222,7 +222,7 @@ The Spa Connection Kit sends all it's commands from address 0x1F. Sending the co
 ```
 0100 - Get version string
 0109 - Change temperature
-0241 - Get filter / econ settings (02413C001E0000), see below. Writing to it seems to be ignored.
+0241 - Get filter / econ settings (02413C001E0000), see below. Read only, writes are ignored.
 024C - Unknown (024C1B0C110300E80701)
 0255 - Get status short
 0256 - Get status long
@@ -581,7 +581,9 @@ AAAA = Filter Time 1
 BBBB = Filter Time 2 (0x1E = 30 minutes)
 FF   = Hawk status flags, same as in the 0x0256 status: 0x01 = Econ mode (moon & stars), 0x08 = Circulation cycle running
 ```
-Sending the same payload back with the econ flag changed (01 1F 40 024100001E0000) does not change anything, the reply is just the current values.
+On the panel, FILT1 and FILT2 show these as durations (0x1E = F 0:30) and ECON is in the same TOOLS menu.
+Writes are ignored, the reply is just the current values. Tried changing the econ flag (024100001E0000 and 024100001E0001)
+and changing Filter Time 2 to 60 minutes (024100003C0001). So this command seems to be read only, at least with the 0x40 operation.
 
 Query the state of a 0x0B on/off setting
 ```
