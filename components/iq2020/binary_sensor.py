@@ -13,6 +13,8 @@ CONF_SENSOR_SALT_BOOST = "salt_boost"
 CONF_SENSOR_SALT_CONFIRMED = "salt_level_confirmed"
 CONF_SENSOR_STATUS_STATE1 = "status_state1"
 CONF_SENSOR_STATUS_STATE2 = "status_state2"
+CONF_SENSOR_ECON_MODE = "econ_mode"
+CONF_SENSOR_CIRCULATION_CYCLE = "circulation_cycle"
 CONF_IQ2020_SERVER = "iq2020_server"
 
 CONFIG_SCHEMA = cv.Schema(
@@ -29,7 +31,13 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_SENSOR_SALT_BOOST): binary_sensor.binary_sensor_schema(),
         cv.Optional(CONF_SENSOR_SALT_CONFIRMED): binary_sensor.binary_sensor_schema(),
         cv.Optional(CONF_SENSOR_STATUS_STATE1): binary_sensor.binary_sensor_schema(),
-        cv.Optional(CONF_SENSOR_STATUS_STATE2): binary_sensor.binary_sensor_schema()
+        cv.Optional(CONF_SENSOR_STATUS_STATE2): binary_sensor.binary_sensor_schema(),
+        cv.Optional(CONF_SENSOR_ECON_MODE): binary_sensor.binary_sensor_schema(
+            icon="mdi:weather-night",
+        ),
+        cv.Optional(CONF_SENSOR_CIRCULATION_CYCLE): binary_sensor.binary_sensor_schema(
+            icon="mdi:sync",
+        )
     }
 )
 
@@ -59,3 +67,11 @@ async def to_code(config):
     if CONF_SENSOR_STATUS_STATE2 in config:
         sens = await binary_sensor.new_binary_sensor(config[CONF_SENSOR_STATUS_STATE2])
         cg.add(server.set_status_state2_sensor(sens))
+
+    if CONF_SENSOR_ECON_MODE in config:
+        sens = await binary_sensor.new_binary_sensor(config[CONF_SENSOR_ECON_MODE])
+        cg.add(server.set_econ_mode_sensor(sens))
+
+    if CONF_SENSOR_CIRCULATION_CYCLE in config:
+        sens = await binary_sensor.new_binary_sensor(config[CONF_SENSOR_CIRCULATION_CYCLE])
+        cg.add(server.set_circulation_cycle_sensor(sens))

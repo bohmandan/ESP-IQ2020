@@ -28,7 +28,7 @@
 #define FAN_JETS2 1
 #define FAN_JETS3 2
 #define FAN_JETS4 3
-#define SWITCHCOUNT 11
+#define SWITCHCOUNT 12
 #define SWITCH_RETRY_COUNT 3
 #define SWITCH_RETRY_TIME 200
 #define SWITCH_LIGHTS 0
@@ -42,6 +42,7 @@
 #define SWITCH_SALT_BOOST 8
 #define SWITCH_AUDIO_POWER 9
 #define SWITCH_ACTIVE 10               // Don't send anything on RS485 bus when disabled
+#define SWITCH_ECON 11                 // Econ mode (moon & stars). Command 0x0B20 is unconfirmed, state comes from the Hawk status byte.
 #define SELECTCOUNT 6
 #define SELECT_AUDIO_SOURCE 0
 #define SELECT_LIGHTS1_COLOR 1         // Underwater lights color (0 to 7 for colors, 8 for cycle)
@@ -112,6 +113,8 @@ public:
 	void set_salt_confirmed_sensor(esphome::binary_sensor::BinarySensor *present) { this->salt_confirmed_sensor_ = present; }
 	void set_status_state1_sensor(esphome::binary_sensor::BinarySensor *present) { this->status_state1_ = present; }
 	void set_status_state2_sensor(esphome::binary_sensor::BinarySensor *present) { this->status_state2_ = present; }
+	void set_econ_mode_sensor(esphome::binary_sensor::BinarySensor *present) { this->econ_mode_sensor_ = present; }
+	void set_circulation_cycle_sensor(esphome::binary_sensor::BinarySensor *present) { this->circulation_cycle_sensor_ = present; }
 #endif
 #ifdef USE_SENSOR
 	void set_current_f_temp_sensor(esphome::sensor::Sensor *temp) { this->current_f_temp_sensor_ = temp; }
@@ -250,6 +253,8 @@ protected:
 	esphome::binary_sensor::BinarySensor *salt_confirmed_sensor_;
 	esphome::binary_sensor::BinarySensor *status_state1_;
 	esphome::binary_sensor::BinarySensor *status_state2_;
+	esphome::binary_sensor::BinarySensor *econ_mode_sensor_;
+	esphome::binary_sensor::BinarySensor *circulation_cycle_sensor_;
 #endif
 #ifdef USE_SENSOR
 	esphome::sensor::Sensor *current_f_temp_sensor_;

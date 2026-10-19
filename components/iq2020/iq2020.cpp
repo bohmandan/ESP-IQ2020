@@ -749,6 +749,12 @@ int IQ2020Component::processIQ2020Command() {
 			setSwitchState(SWITCH_SUMMERTIMER, (processingBuffer[7] & 1));
 		}
 
+		if ((cmdlen == 9) && (processingBuffer[5] == 0x0B) && (processingBuffer[6] == 0x20)) {
+			// Reply to the econ mode command. Unconfirmed command, so log the reply and poll status to get the real state from the Hawk byte.
+			ESP_LOGW(TAG, "Econ mode (0x0B20) reply: %02X", processingBuffer[7]);
+			if (switch_pending[SWITCH_ECON] != NOT_SET) { switch_pending[SWITCH_ECON] = NOT_SET; next_poll = ::millis() + 1000; }
+		}
+
 		// Confirmation that a Jets command was received which includes new state
 		if ((cmdlen == 9) && (processingBuffer[5] == 0x0B) && (processingBuffer[6] >= 0x02) && (processingBuffer[6] <= 0x05)) {
 			setSwitchState(processingBuffer[6] + 3, processingBuffer[7]);
@@ -898,6 +904,7 @@ int IQ2020Component::processIQ2020Command() {
 			setSwitchState(SWITCH_SPALOCK, (flags2 & 0x02) != 0);
 			setSwitchState(SWITCH_CLEANCYCLE, (flags2 & 0x10) != 0);
 			setSwitchState(SWITCH_SUMMERTIMER, (flags2 & 0x20) != 0);
+			if (cmdlen == 140) { setSwitchState(SWITCH_ECON, (processingBuffer[127] & 0x01) != 0); } // Hawk status: 0x01 = Econ mode
 
 #ifdef USE_BINARY_SENSOR
 			if (this->status_state1_) {
@@ -908,6 +915,11 @@ int IQ2020Component::processIQ2020Command() {
 			}
 			if (this->status_state2_) {
 				this->status_state2_->publish_state((flags3 & 0x04) != 0);
+			}
+			if (cmdlen == 140) {
+				// Hawk status flags: 0x01 = Econ mode (moon & stars), 0x08 = Circulation cycle running (jets 1 on)
+				if (this->econ_mode_sensor_) this->econ_mode_sensor_->publish_state((processingBuffer[127] & 0x01) != 0);
+				if (this->circulation_cycle_sensor_) this->circulation_cycle_sensor_->publish_state((processingBuffer[127] & 0x08) != 0);
 			}
 #endif
 
@@ -1205,6 +1217,12 @@ void IQ2020Component::switchAction(unsigned int switchid, int state) {
 	case SWITCH_SUMMERTIMER: { // Summer Timer Switch
 		switch_pending[SWITCH_SUMMERTIMER] = state;
 		unsigned char cmd[] = { 0x0B, 0x1C, (state != 0) ? (unsigned char)0x02 : (unsigned char)0x01 };
+		sendIQ2020Command(0x01, 0x1F, 0x40, cmd, sizeof(cmd));
+		break;
+	}
+	case SWITCH_ECON: { // Econ Mode Switch (experimental, 0x0B20 is a guess based on 0x0B1C to 0x0B1F)
+		switch_pending[SWITCH_ECON] = state;
+		unsigned char cmd[] = { 0x0B, 0x20, (state != 0) ? (unsigned char)0x02 : (unsigned char)0x01 };
 		sendIQ2020Command(0x01, 0x1F, 0x40, cmd, sizeof(cmd));
 		break;
 	}
